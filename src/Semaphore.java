@@ -1,15 +1,15 @@
 public class Semaphore {
-    private int value;
+    private int val;
 
-    public Semaphore(int initialValue) {
-        if (initialValue < 0) {
+    public Semaphore(int initVal) {
+        if (initVal < 0) {
             throw new IllegalArgumentException("Initial value cannot be negative.");
         }
-        this.value = initialValue;
+        this.val = initVal;
     }
 
     public synchronized void acquire() {
-        while (this.value == 0) {
+        while (this.val == 0) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -17,11 +17,11 @@ public class Semaphore {
                 return;
             }
         }
-        this.value--;
+        this.val--;
     }
 
     public synchronized void release() {
-        this.value++;
+        this.val++;
         notify();
     }
 }
