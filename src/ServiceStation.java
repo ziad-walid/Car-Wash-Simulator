@@ -12,8 +12,18 @@ public class ServiceStation {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
-        System.out.print("Enter waiting area capacity: ");
-        int waitingAreaCapacity = input.nextInt();
+        int waitingAreaCapacity;
+        while (true)
+        {
+            System.out.print("Enter waiting area capacity: ");
+            waitingAreaCapacity = input.nextInt();
+            if (waitingAreaCapacity > 0 && waitingAreaCapacity <= 10) {
+                break;
+            }
+            else {
+                System.out.println("Invalid input. Waiting area capacity must be between 1 and 10 (inclusive).");
+            }
+        }
 
         System.out.print("Enter number of service bays: ");
         int numberOfPumps = input.nextInt();
@@ -24,15 +34,15 @@ public class ServiceStation {
         input.close();
 
         Queue<Integer> waitingQueue = new LinkedList<>();
-        Semaphore empty = new Semaphore(waitingAreaCapacity); 
-        Semaphore full = new Semaphore(0);                    
-        Semaphore mutex = new Semaphore(1);                   
-        pumps = new Semaphore(numberOfPumps);       
+        Semaphore empty = new Semaphore(waitingAreaCapacity);
+        Semaphore full = new Semaphore(0);
+        Semaphore mutex = new Semaphore(1);
+        pumps = new Semaphore(numberOfPumps);
 
         System.out.println("Waiting Area Capacity: " + waitingAreaCapacity);
         System.out.println("Number of Pumps: " + numberOfPumps);
         System.out.println("Total Cars: " + totalCars);
-        
+
 
         for (int i = 1; i <= numberOfPumps; i++) {
             Thread pumpThread = new Thread(new Pump(waitingQueue, empty, full, pumps, mutex, i));
@@ -45,12 +55,12 @@ public class ServiceStation {
 
 
             try {
-                Thread.sleep(100); 
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
 
-       
+
     }
 }
