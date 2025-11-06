@@ -24,4 +24,7 @@ public class Semaphore {
         this.val++;
         notify();
     }
+    public synchronized int availablePermits() { // help to check available permits
+        return this.val;
+    }
 }

@@ -25,19 +25,27 @@ public class Pump implements Runnable {
     @Override
     public void run() {
         try {
-            Full.acquire();
-            Mutex.acquire();
-            int car = queue.poll();
-            Mutex.release();
-            Empty.release();
-            Pumps.acquire();
-            System.out.println("Pump" + pumpId + ": C" + car + " Occupied");
-            System.out.println("Pump" + pumpId + ": C" + car + " Login");
-            System.out.println("Pump" + pumpId + ": C" + car + " begins service at Bay " + pumpId);
-            Thread.sleep(1000);
-            System.out.println("Pump" + pumpId + ": C" + car + " Finishes service");
-            Pumps.release();
-            System.out.println("Bay " + pumpId + " is free now");
+            while (true){
+                Full.acquire();
+                Mutex.acquire();
+                int car = queue.poll();
+                Mutex.release();
+                Empty.release();
+                Pumps.acquire();
+                Thread.sleep(300);
+                System.out.println("Pump" + pumpId + ": C" + car + " Occupied");
+                Thread.sleep(600);
+                System.out.println("Pump" + pumpId + ": C" + car + " Login");
+                System.out.println("Pump" + pumpId + ": C" + car + " begins service at Bay " + pumpId);
+                Thread.sleep(1000);
+                System.out.println("Pump" + pumpId + ": C" + car + " Finishes service");
+                Pumps.release();
+                System.out.println("Bay " + pumpId + " is free now");
+                int served = ServiceStation.servedCars.incrementAndGet(); // this part work to print the last message correctly using atomic integer
+                if (served == ServiceStation.totalCars) {
+                    System.out.println("All cars processed; simulation ends");
+                }
+            }
         } catch (Exception e) {
             Thread.currentThread().interrupt();
         }

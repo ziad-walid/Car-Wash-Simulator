@@ -19,11 +19,15 @@ public class Car extends Thread {
     public void run() {
         System.out.println("Car " + id + " arrives.");
 
-        empty.acquire();
+        empty.acquire();    
+
+        if (ServiceStation.pumps.availablePermits() == 0) { // to check if all pumps are busy
+            System.out.println("C" + id + "arrived and waiting");
+        }
         
         mutex.acquire();
         queue.add(id);
-        System.out.println("Car " + id + " enters the waiting queue.");
+        
         mutex.release(); 
         
         full.release();
