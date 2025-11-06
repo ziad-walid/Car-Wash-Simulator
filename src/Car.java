@@ -25,6 +25,7 @@ public class Car extends Thread {
             System.out.println("C" + id + "arrived and waiting");
         }
         
+        
         mutex.acquire();
         queue.add(id);
         
