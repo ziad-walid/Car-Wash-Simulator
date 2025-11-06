@@ -22,9 +22,8 @@ public class Car extends Thread {
         empty.acquire();    
 
         if (ServiceStation.pumps.availablePermits() == 0) { // to check if all pumps are busy
-            System.out.println("C" + id + "arrived and waiting");
+            System.out.println("C" + id + " arrived and waiting");
         }
-        
         
         mutex.acquire();
         queue.add(id);

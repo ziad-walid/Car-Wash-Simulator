@@ -32,7 +32,6 @@ public class Pump implements Runnable {
                 Mutex.release();
                 Empty.release();
                 Pumps.acquire();
-                Thread.sleep(300);
                 System.out.println("Pump" + pumpId + ": C" + car + " Occupied");
                 Thread.sleep(600);
                 System.out.println("Pump" + pumpId + ": C" + car + " Login");
