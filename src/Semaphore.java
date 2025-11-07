@@ -8,14 +8,9 @@ public class Semaphore {
         this.val = initVal;
     }
 
-    public synchronized void acquire() {
+    public synchronized void acquire() throws InterruptedException {
         while (this.val == 0) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Handle thread interruption
-                return;
-            }
+            wait();
         }
         this.val--;
     }

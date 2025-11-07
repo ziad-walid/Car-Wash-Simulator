@@ -3,17 +3,10 @@ import java.util.Queue;
 public class Pump implements Runnable {
 
     private Queue<Integer> queue;
-    private Semaphore Empty , Full , Pumps , Mutex;
+    private Semaphore Empty, Full, Pumps, Mutex;
     private int pumpId;
-    // inquire is a request to enter
-    // release is for exiting
-    // queue is for cars waiting for fuel (like a waiting area)
-    // Empty is for empty spots in the queue (available spots for cars to wait)
-    // Full is for full spots in the queue (ready cars to be served (enter a pump))
-    // Pumps is for available pumps (available service bays)
-    // Mutex is for mutual exclusion (to protect shared cars)
 
-    public Pump(Queue<Integer> queue, Semaphore Empty, Semaphore Full, Semaphore Pumps, Semaphore Mutex , int pumpId) {
+    public Pump(Queue<Integer> queue, Semaphore Empty, Semaphore Full, Semaphore Pumps, Semaphore Mutex, int pumpId) {
         this.queue = queue;
         this.Empty = Empty;
         this.Full = Full;
@@ -22,31 +15,32 @@ public class Pump implements Runnable {
         this.pumpId = pumpId;
     }
 
+    public void displayMessage(String msg) {
+        System.out.println(msg);
+    }
+
     @Override
     public void run() {
         try {
-            while (true){
+            while (true) {
                 Full.acquire();
                 Mutex.acquire();
                 int car = queue.poll();
                 Mutex.release();
                 Empty.release();
                 Pumps.acquire();
-                System.out.println("Pump" + pumpId + ": C" + car + " Occupied");
-                Thread.sleep(600);
-                System.out.println("Pump" + pumpId + ": C" + car + " Login");
-                System.out.println("Pump" + pumpId + ": C" + car + " begins service at Bay " + pumpId);
-                Thread.sleep(1000);
-                System.out.println("Pump" + pumpId + ": C" + car + " Finishes service");
+
+                displayMessage("Pump" + pumpId + ": C" + car + " Occupied");
+                displayMessage("Pump" + pumpId + ": C" + car + " Login");
+                displayMessage("Pump" + pumpId + ": C" + car + " begins service at Bay " + pumpId);
+                Thread.sleep(2000);
+                displayMessage("Pump" + pumpId + ": C" + car + " Finishes service");
                 Pumps.release();
-                System.out.println("Bay " + pumpId + " is free now");
-                int served = ServiceStation.servedCars.incrementAndGet(); // this part work to print the last message correctly using atomic integer
-                if (served == ServiceStation.totalCars) {
-                    System.out.println("All cars processed; simulation ends");
-                }
+                displayMessage("Bay " + pumpId + " is free now");
             }
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            displayMessage("Pump " + pumpId + " was interrupted");
         }
     }
 }

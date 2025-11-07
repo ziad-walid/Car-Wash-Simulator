@@ -15,26 +15,29 @@ public class Car extends Thread {
         this.mutex = mutex;
     }
 
+    public void displayMessage(String msg) {
+        System.out.println(msg);
+    }
+
     @Override
     public void run() {
-        System.out.println("Car " + id + " arrives.");
+        try {
+            displayMessage("Car " + id + " arrived");
 
-        empty.acquire();    
+            empty.acquire();
+            mutex.acquire();
+            queue.add(id);
+            displayMessage("C" + id + " Arrived and waiting");
+            mutex.release();
+            full.release();
 
-        if (ServiceStation.pumps.availablePermits() == 0) { // to check if all pumps are busy
-            System.out.println("C" + id + " arrived and waiting");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            displayMessage("Car " + id + " was interrupted");
         }
-        
-        mutex.acquire();
-        queue.add(id);
-        
-        mutex.release(); 
-        
-        full.release();
     }
 
     public static void main(String[] args) {
-    System.out.println("Car class compiled successfully");
+        System.out.println("Car class compiled successfully");
+    }
 }
-}
-
