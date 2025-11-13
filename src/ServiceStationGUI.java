@@ -91,7 +91,7 @@ public class ServiceStationGUI extends JFrame {
 
             // Start pump threads
             for (int i = 1; i <= numberOfPumps; i++) {
-                Thread pumpThread = new Thread(new Pump(waitingQueue, empty, full, pumps, mutex, i) {
+                Thread pumpThread = new Thread(new Pump(waitingQueue, empty, full, pumps, mutex, i, servedCars, totalCars) {
                     @Override
                     public void displayMessage(String msg) {
                         appendLog(msg);
@@ -102,21 +102,17 @@ public class ServiceStationGUI extends JFrame {
 
             // Start car threads
             for (int i = 1; i <= totalCars; i++) {
-                Thread car = new Thread(new Car(i, waitingQueue, empty, full, mutex) {
+                Thread car = new Thread(new Car(i, waitingQueue, empty, full, mutex, pumps) {
                     @Override
                     public void displayMessage(String msg) {
                         appendLog(msg);
-                        if (servedCars.get() == totalCars) {
-                            appendLog("All cars processed; simulation ends");
-                            
-                        }
                     }
                 });
                 car.start();
                 Thread.sleep(300);
             }
 
-
+        
         } catch (NumberFormatException ex) {
             appendLog("Please enter valid numeric values.");
         } catch (InterruptedException e) {
@@ -133,7 +129,6 @@ public class ServiceStationGUI extends JFrame {
         });
     }
 
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ServiceStationGUI().setVisible(true));

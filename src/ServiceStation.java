@@ -50,7 +50,7 @@ public class ServiceStation {
         }
 
         for (int i = 1; i <= ServiceStation.totalCars; i++) {
-            Car car = new Car(i, waitingQueue, empty, full, mutex);
+            Car car = new Car(i, waitingQueue, empty, full, mutex, pumps);
             car.start();
 
 
